@@ -16,7 +16,10 @@ export function sendCartData(cart) {
         "https://cart-e3cb5-default-rtdb.firebaseio.com/cart.json",
         {
           method: "PUT",
-          body: JSON.stringify(cart),
+          body: JSON.stringify({
+            items: cart.items,
+            totalQuantity: cart.totalQuantity,
+          }),
         }
       );
 
@@ -27,19 +30,29 @@ export function sendCartData(cart) {
 
     try {
       await sendRequest();
-      dispatch(
-        uiActions.showNotification({
-          status: "success",
-          title: "request success",
-          message: "data is successfully stored in the server!!",
-        })
-      );
+      if (cart.itemStatus === 'remove') {
+        dispatch(
+          uiActions.showNotification({
+            status: "success",
+            title: "request success",
+            message: "data is successfully removed from the server!!",
+          })
+        );
+      } else if (cart.itemStatus === 'add') {
+        dispatch(
+          uiActions.showNotification({
+            status: "success",
+            title: "request success",
+            message: "data is successfully stored in the server!!",
+          })
+        );
+      }
     } catch (e) {
       dispatch(
         uiActions.showNotification({
           status: "error",
           title: "sending request failed",
-          messageS: "sending data to the server failed..",
+          message: "sending data to the server failed..",
         })
       );
     }
@@ -69,7 +82,12 @@ export function fetchCartData() {
 
     try {
       const cartData = await fetchData();
-      dispatch(cartActions.replaceCart(cartData))
+      dispatch(
+        cartActions.replaceCart({
+          items: cartData.items || [],
+          totalQuantity: cartData.totalQuantity,
+        })
+      );
     } catch (e) {
       dispatch(
         uiActions.showNotification({

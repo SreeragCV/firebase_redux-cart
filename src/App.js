@@ -15,16 +15,17 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchCartData())
-  }, [dispatch])
+    dispatch(fetchCartData());
+  }, [dispatch]);
 
   useEffect(() => {
     if (initial) {
       initial = false;
       return;
     }
-
-    dispatch(sendCartData(cart));
+    if (cart.changed) {
+      dispatch(sendCartData(cart));
+    }
   }, [cart, dispatch]);
 
   return (
