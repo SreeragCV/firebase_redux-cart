@@ -3,8 +3,8 @@ import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import { useDispatch, useSelector } from "react-redux";
-import { uiActions } from "./store/ui-slice";
 import Notification from "./components/UI/Notification";
+import { sendCartData } from "./store/cart-slice";
 
 let initial = true;
 
@@ -15,54 +15,17 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    async function sendData() {
-      dispatch(
-        uiActions.showNotification({
-          status: "pending",
-          title: "sending request",
-          message: "sending data to the server..",
-        })
-      );
-      const response = await fetch(
-        "https://cart-e3cb5-default-rtdb.firebaseio.com/cart.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(cart),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong!!");
-      }
-
-      dispatch(
-        uiActions.showNotification({
-          status: "success",
-          title: "request success",
-          message: "data is successfully stored in the server!!",
-        })
-      );
-    }
-
     if (initial) {
       initial = false;
       return;
     }
 
-    sendData().catch(
-      dispatch(
-        uiActions.showNotification({
-          status: "pending",
-          title: "sending request",
-          messag: "sending data to the server..",
-        })
-      )
-    );
+    dispatch(sendCartData(cart));
   }, [cart, dispatch]);
 
   return (
     <>
-      {notification && (
+      {notification && notification.status !== null  &&  (
         <Notification
           title={notification.title}
           message={notification.message}
