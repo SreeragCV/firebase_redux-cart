@@ -34,16 +34,16 @@ export function sendCartData(cart) {
         dispatch(
           uiActions.showNotification({
             status: "success",
-            title: "request success",
-            message: "data is successfully removed from the server!!",
+            title: "Request success",
+            message: "Data removed from the server!!",
           })
         );
       } else if (cart.itemStatus === 'add') {
         dispatch(
           uiActions.showNotification({
             status: "success",
-            title: "request success",
-            message: "data is successfully stored in the server!!",
+            title: "Request success",
+            message: "Data stored in the server!!",
           })
         );
       }
